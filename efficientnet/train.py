@@ -5,13 +5,15 @@ import torch
 from torch import distributed, nn
 
 from efficientnet.utils import distributed_is_initialized
-
+from efficientnet.models.efficientnet import EfficientNet
+from efficientnet.trainer import Trainer
+from efficientnet.optim.rmsprop import TFRMSprop
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', type=str, default='./configs/cifar10.yaml')
+    #parser.add_argument('-c', '--config', type=str, default='./configs/train/')
     parser.add_argument('--resume', type=str, default=None)
-    parser.add_argument('--no-cuda', action='store_true')
+    #parser.add_argument('--no-cuda', action='store_true')
     parser.add_argument('--data-parallel', action='store_true')
 
     # distributed
@@ -36,15 +38,19 @@ def main():
     torch.backends.cudnn.benchmark = True
 
     args = parse_args()
-    config = mlconfig.load(args.config)
-    print(config)
+    #config = mlconfig.load(args.config)
+    #print(config)
 
     if args.world_size > 1:
         init_process(args.backend, args.init_method, args.world_size, args.rank)
 
-    device = torch.device('cuda' if torch.cuda.is_available() and not args.no_cuda else 'cpu')
+    print(torch.cuda.is_available())
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(device)
 
-    model = config.model()
+
+    model = EfficientNet()
+    #model = config.model()
     if distributed_is_initialized():
         model.to(device)
         model = nn.parallel.DistributedDataParallel(model)
@@ -53,12 +59,12 @@ def main():
             model = nn.DataParallel(model)
         model.to(device)
 
-    optimizer = config.optimizer(model.parameters())
-    scheduler = config.scheduler(optimizer)
-    train_loader = config.dataset(train=True)
-    valid_loader = config.dataset(train=False)
-
-    trainer = config.trainer(model, optimizer, train_loader, valid_loader, scheduler, device)
+    #optimizer = torch.optim.Adam(model.parameters(), lr=0.002)
+    optimizer = TFRMSprop(model.parameters())
+    lmbda = lambda epoch: 0.95
+    scheduler = torch.optim.lr_scheduler.MultiplicativeLR(optimizer, lr_lambda=lmbda)
+    #scheduler = torch.optim.lr_scheduler._LRScheduler(optimizer)
+    trainer = Trainer(model, optimizer, scheduler, device, 100, "./checkpoint/")
 
     if args.resume is not None:
         trainer.resume(args.resume)

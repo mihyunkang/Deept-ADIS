@@ -1,4 +1,4 @@
-import mlconfig
+'''import mlconfig
 from torch import optim
 
 from .rmsprop import TFRMSprop
@@ -8,4 +8,4 @@ mlconfig.register(optim.Adam)
 
 mlconfig.register(optim.lr_scheduler.MultiStepLR)
 mlconfig.register(optim.lr_scheduler.StepLR)
-mlconfig.register(optim.lr_scheduler.ExponentialLR)
+mlconfig.register(optim.lr_scheduler.ExponentialLR) '''

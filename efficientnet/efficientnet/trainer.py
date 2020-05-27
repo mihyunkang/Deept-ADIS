@@ -10,6 +10,8 @@ from torch.utils import data
 from tqdm import tqdm, trange
 
 from .metrics import Accuracy, Average
+from .datasets.deepfake_test import DEEPFAKE_test_DataLoader
+from .datasets.deepfake_train import DEEPFAKE_train_DataLoader
 
 
 class AbstractTrainer(metaclass=ABCMeta):
@@ -30,14 +32,14 @@ class AbstractTrainer(metaclass=ABCMeta):
 @mlconfig.register
 class Trainer(AbstractTrainer):
 
-    def __init__(self, model: nn.Module, optimizer: optim.Optimizer, train_loader: data.DataLoader,
-                 valid_loader: data.DataLoader, scheduler: optim.lr_scheduler._LRScheduler, device: torch.device,
+    def __init__(self, model: nn.Module, optimizer: optim.Optimizer, scheduler: optim.lr_scheduler._LRScheduler, device: torch.device,
                  num_epochs: int, output_dir: str):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.train_loader = train_loader
-        self.valid_loader = valid_loader
+        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=128)
+
+        self.valid_loader = DEEPFAKE_test_DataLoader(batch_size=128)
         self.device = device
         self.num_epochs = num_epochs
         self.output_dir = output_dir

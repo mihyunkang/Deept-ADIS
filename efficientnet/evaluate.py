@@ -5,19 +5,21 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 from efficientnet import models
-from efficientnet.datasets.imagenet import ImageNetDataLoader
 from efficientnet.metrics import Accuracy, Average
 from efficientnet.models.efficientnet import params
+
+from .datasets.deepfake_test import DEEPFAKE_test_DataLoader
+from .datasets.deepfake_train import DEEPFAKE_train_DataLoader
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--arch', type=str, default='efficientnet_b0')
-    parser.add_argument('-r', '--root', type=str, default='./configs/')
+    #parser.add_argument('-r', '--root', type=str, default='./configs/')
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('-w', '--weight', type=str, default=None)
     parser.add_argument('--num-workers', type=int, default=8)
-    parser.add_argument('--no-cuda', action='store_true')
+    #parser.add_argument('--no-cuda', action='store_true')
     return parser.parse_args()
 
 
@@ -47,7 +49,7 @@ def evaluate(model, valid_loader, device):
 if __name__ == '__main__':
     args = parse_args()
 
-    device = torch.device('cuda' if torch.cuda.is_available() and not args.no_cuda else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     model = getattr(models, args.arch)(pretrained=(args.weight is None))
     if args.weight is not None:
@@ -56,6 +58,6 @@ if __name__ == '__main__':
     model.to(device)
 
     image_size = params[args.arch][2]
-    valid_loader = ImageNetDataLoader(args.root, image_size, False, args.batch_size, num_workers=args.num_workers)
+    valid_loader = DEEPFAKE_test_DataLoader(args.root, image_size, False, args.batch_size, num_workers=args.num_workers)
 
     evaluate(model, valid_loader, device)

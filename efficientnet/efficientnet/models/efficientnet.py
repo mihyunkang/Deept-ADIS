@@ -145,7 +145,7 @@ def _round_repeats(repeats, depth_mult):
 @mlconfig.register
 class EfficientNet(nn.Module):
 
-    def __init__(self, width_mult=1.0, depth_mult=1.0, dropout_rate=0.2, num_classes=1000):
+    def __init__(self, width_mult=1.0, depth_mult=1.0, dropout_rate=0.2, num_classes=2):
         super(EfficientNet, self).__init__()
 
         # yapf: disable
