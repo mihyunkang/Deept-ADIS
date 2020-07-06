@@ -86,7 +86,7 @@ def get_params(example_index):
         pretrained_model(Pytorch model): Model to use for the operations
     """
     # Pick one of the examples
-    example_list = [['../input_images/apple.JPEG', 948],
+    example_list = [['../input_images/fake_methodA_509537_1433884_A_000_0.jpg', 1],
                     ['../input_images/eel.JPEG', 390],
                     ['../input_images/bird.JPEG', 13]]
     selected_example = example_index

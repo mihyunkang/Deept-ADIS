@@ -41,9 +41,9 @@ class DEEPFAKE_test_Dataset(Dataset):
         #image = np.swapaxes(image, 0, 2)
         #image = np.swapaxes(image, 1, 2)
         transform = transforms.Compose([
-            transforms.Resize(256),
+            transforms.Resize((256, 256)),
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,)),
+            transforms.Normalize((0.4,), (0.4,)),
             Expand(),
         ])
         image = transform(image)

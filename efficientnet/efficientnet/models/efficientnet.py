@@ -26,6 +26,7 @@ params = {
     'efficientnet_b5': (1.6, 2.2, 456, 0.4),
     'efficientnet_b6': (1.8, 2.6, 528, 0.5),
     'efficientnet_b7': (2.0, 3.1, 600, 0.5),
+    #w, d, r
 }
 
 
@@ -145,7 +146,7 @@ def _round_repeats(repeats, depth_mult):
 @mlconfig.register
 class EfficientNet(nn.Module):
 
-    def __init__(self, width_mult=1.0, depth_mult=1.0, dropout_rate=0.2, num_classes=2):
+    def __init__(self, width_mult=1.1, depth_mult=1.2, dropout_rate=0.2, num_classes=2):
         super(EfficientNet, self).__init__()
 
         # yapf: disable

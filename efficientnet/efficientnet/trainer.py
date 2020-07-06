@@ -37,9 +37,9 @@ class Trainer(AbstractTrainer):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=128)
+        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=40)
 
-        self.valid_loader = DEEPFAKE_test_DataLoader(batch_size=128)
+        self.valid_loader = DEEPFAKE_test_DataLoader(batch_size=40)
         self.device = device
         self.num_epochs = num_epochs
         self.output_dir = output_dir
@@ -71,6 +71,7 @@ class Trainer(AbstractTrainer):
         train_acc = Accuracy()
 
         train_loader = tqdm(self.train_loader, ncols=0, desc='Train')
+        print(len(train_loader))
         for x, y in train_loader:
             x = x.to(self.device)
             y = y.to(self.device)

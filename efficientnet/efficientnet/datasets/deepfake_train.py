@@ -38,17 +38,18 @@ class DEEPFAKE_train_Dataset(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.data_dict[idx]
         #image = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        image = Image.open(img_path)
-        
+        image = Image.open(img_path).convert('RGB')
         #image = np.swapaxes(image, 0, 2)
         #image = np.swapaxes(image, 1, 2)
         transform = transforms.Compose([
-            transforms.Resize(256),
+            transforms.Resize((256, 256)),
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,)),
+            transforms.Normalize((0.4,), (0.4,)),
             Expand(),
         ])
         image = transform(image)
+        #print(image.shape)
+        #print((image, label))
         return (image, label)
 
 @mlconfig.register
@@ -56,4 +57,4 @@ class DEEPFAKE_train_DataLoader(DataLoader):
     def __init__(self, batch_size: int, **kwargs):
         dataset = DEEPFAKE_train_Dataset()
 
-        super(DEEPFAKE_train_DataLoader, self).__init__(dataset=dataset, batch_size=batch_size, **kwargs)
+        super(DEEPFAKE_train_DataLoader, self).__init__(dataset=dataset, batch_size=batch_size, shuffle=True, **kwargs)

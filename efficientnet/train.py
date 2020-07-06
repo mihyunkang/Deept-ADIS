@@ -61,8 +61,9 @@ def main():
 
     #optimizer = torch.optim.Adam(model.parameters(), lr=0.002)
     optimizer = TFRMSprop(model.parameters())
-    lmbda = lambda epoch: 0.95
-    scheduler = torch.optim.lr_scheduler.MultiplicativeLR(optimizer, lr_lambda=lmbda)
+    #lmbda = lambda epoch: 0.95
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 10)
+    #scheduler = torch.optim.lr_scheduler.MultiplicativeLR(optimizer, lr_lambda=lmbda)
     #scheduler = torch.optim.lr_scheduler._LRScheduler(optimizer)
     trainer = Trainer(model, optimizer, scheduler, device, 100, "./checkpoint/")
 

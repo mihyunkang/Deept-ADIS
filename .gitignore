@@ -1,2 +1,6 @@
-configs/
-data/
+/configs
+/data
+/face_data
+/face_data_div
+/real_per15_frame
+
