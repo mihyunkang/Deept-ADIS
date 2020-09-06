@@ -11,8 +11,8 @@ valPath = './face_data_div/val/real_15/'
 crsPath = './real_per_15_frame/' #dir where images and annotations stored
 
 #setup ratio (val ratio = rest of the files in origin dir after splitting into train and test)
-train_ratio = 0.9
-val_ratio = 0.1
+train_ratio = 0.8
+val_ratio = 0.2
 
 
 #total count of imgs
