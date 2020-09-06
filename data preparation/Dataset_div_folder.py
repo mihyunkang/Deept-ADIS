@@ -34,6 +34,6 @@ for i in range(len(fake_file)):
     if(i<len(fake_file)*0.7): #train-real
         shutil.move(path_fake+'/'+fake_file[i], dest_train+'fake/'+fake_file[i])
     elif(len(fake_file)*0.7<i and i <=len(fake_file)*0.9): #test-real
-        shutil.move(path_fake+'/'+fake_file[i], dest_test+'fake'+fake_file[i])
+        shutil.move(path_fake+'/'+fake_file[i], dest_test+'fake/'+fake_file[i])
     else: #val-real
-        shutil.move(path_fake+'/'+fake_file[i], dest_val+'fake'+fake_file[i])
+        shutil.move(path_fake+'/'+fake_file[i], dest_val+'fake/'+fake_file[i])
