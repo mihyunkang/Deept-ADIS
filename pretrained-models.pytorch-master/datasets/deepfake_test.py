@@ -16,8 +16,8 @@ class DEEPFAKE_test_Dataset(Dataset):
     """Face Landmarks dataset."""
     #print("- deepfake test dataset class -")
     def __init__(self):
-        dir_1 = "C:/deept/face_data_div/val/fake/"
-        dir_0 = "C:/deept/face_data_div/val/real/"
+        dir_1 = "D:/dataset/test/fake"
+        dir_0 = "D:/dataset/test/real"        
 
         file_list_0 = os.listdir(dir_0)
         file_list_1 = os.listdir(dir_1)
@@ -31,17 +31,26 @@ class DEEPFAKE_test_Dataset(Dataset):
         #"".join(file_list_1[i].split("_")[1:])
         for i in range(len(file_list_1)):
             self.data_dict[len(file_list_0)+i] = (dir_1+file_list_1[i], 1)
+        
+        '''
+        self.max_len  = max(len(file_list_0), len(file_list_1))
+        for i in range(self.max_len*2):
+            if(i%2==0): #data_dict 의 짝수번 인덱스는 real data 저장
+                self.data_dict[i] = (dir_0+file_list_0[(i//2)%len(file_list_0)], 0)
+            else: #홀수번 인덱스에는 fake data 저장
+                self.data_dict[i] = (dir_1+file_list_1[(i//2)%len(file_list_1)], 1)
+        '''
+
+
 
     def __len__(self):
         return len(self.data_dict)
+        #return (self.max_len)*2
 
     def __getitem__(self, idx):
         img_path, label = self.data_dict[idx]
         #image = cv2.imread(img_path, cv2.IMREAD_COLOR)
         image = Image.open(img_path)
-        
-        #image = np.swapaxes(image, 0, 2)
-        #image = np.swapaxes(image, 1, 2)
         transform = transforms.Compose([
             transforms.Resize((256,256)),
             transforms.ToTensor(),

@@ -56,7 +56,7 @@ if __name__ == '__main__':
     args = parse_args()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     PATH = "./checkpoint/xception/best.pth"
-    model = inceptionv4() #모델이 이거 하나면 되는건가?
+    model = inceptionv4() #모델이 이거 하나면 되는건가?5
     model.to(device)
 
     #image_size = params[args.arch][2]

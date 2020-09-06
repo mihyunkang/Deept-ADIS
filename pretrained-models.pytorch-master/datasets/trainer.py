@@ -38,9 +38,9 @@ class Trainer(AbstractTrainer):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=30)
+        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=100) # 30에서 100으로 변경
 
-        self.valid_loader = DEEPFAKE_test_DataLoader(batch_size=30)
+        self.valid_loader = DEEPFAKE_test_DataLoader(batch_size=100)
         self.device = device
         self.num_epochs = num_epochs
         self.output_dir = output_dir
@@ -103,7 +103,6 @@ class Trainer(AbstractTrainer):
             for x, y in valid_loader:
                 x = x.to(self.device)
                 y = y.to(self.device)
-
                 output = self.model(x)
                 loss = F.cross_entropy(output, y)
 
