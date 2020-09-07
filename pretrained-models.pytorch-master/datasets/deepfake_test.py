@@ -13,39 +13,25 @@ class Expand(object):
 
 
 class DEEPFAKE_test_Dataset(Dataset):
-    """Face Landmarks dataset."""
-    #print("- deepfake test dataset class -")
     def __init__(self):
-        dir_1 = "D:/dataset/test/fake"
-        dir_0 = "D:/dataset/test/real"        
+        dir_1 = "D:/full_data/test/fake/"
+        dir_0 = "D:/full_data/test/real/"        
 
         file_list_0 = os.listdir(dir_0)
         file_list_1 = os.listdir(dir_1)
         
         self.data_dict = {}
-
-        #"".join(file_list_0[i].split("_")[2:])
-        for i in range(len(file_list_0)):
-            self.data_dict[i] = (dir_0+file_list_0[i], 0)
-
-        #"".join(file_list_1[i].split("_")[1:])
-        for i in range(len(file_list_1)):
-            self.data_dict[len(file_list_0)+i] = (dir_1+file_list_1[i], 1)
-        
-        '''
         self.max_len  = max(len(file_list_0), len(file_list_1))
         for i in range(self.max_len*2):
             if(i%2==0): #data_dict 의 짝수번 인덱스는 real data 저장
                 self.data_dict[i] = (dir_0+file_list_0[(i//2)%len(file_list_0)], 0)
             else: #홀수번 인덱스에는 fake data 저장
                 self.data_dict[i] = (dir_1+file_list_1[(i//2)%len(file_list_1)], 1)
-        '''
-
 
 
     def __len__(self):
-        return len(self.data_dict)
-        #return (self.max_len)*2
+        #return len(self.data_dict)
+        return (self.max_len)*2
 
     def __getitem__(self, idx):
         img_path, label = self.data_dict[idx]

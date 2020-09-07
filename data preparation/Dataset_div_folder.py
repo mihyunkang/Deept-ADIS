@@ -7,7 +7,7 @@ import shutil
 #real 데이터
 path_real = "D:/deeper_forensics/real"
 #fake 데이터
-path_fake = "D:/deeper_forensics/fake"
+path_fake = "D:/deeper_forensics/fake" #path_fake = "D:/full_data/fake"
 #파일경로로 불러옴
 real_file = os.listdir(path_real)
 fake_file = os.listdir(path_fake)
