@@ -11,7 +11,11 @@ from torch.utils import data
 from tqdm import tqdm, trange
 
 from .metrics import Accuracy, Average
-from .deepfake_test import DEEPFAKE_test_DataLoader
+<<<<<<< HEAD
+from .deepfake_val import DEEPFAKE_val_DataLoader
+=======
+from .deepfake_valid import DEEPFAKE_val_DataLoader
+>>>>>>> 836384cfb2f62c382b9140ec21001d70541ee65e
 from .deepfake_train import DEEPFAKE_train_DataLoader
 
 
@@ -38,9 +42,15 @@ class Trainer(AbstractTrainer):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=100) # 30에서 100으로 변경
+<<<<<<< HEAD
+        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=20) # 30에서 100으로 변경
 
-        self.valid_loader = DEEPFAKE_test_DataLoader(batch_size=100)
+        self.valid_loader = DEEPFAKE_val_DataLoader(batch_size=20)
+=======
+        #데이터 로드!
+        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=30) 
+        self.valid_loader = DEEPFAKE_val_DataLoader(batch_size=30)
+>>>>>>> 836384cfb2f62c382b9140ec21001d70541ee65e
         self.device = device
         self.num_epochs = num_epochs
         self.output_dir = output_dir

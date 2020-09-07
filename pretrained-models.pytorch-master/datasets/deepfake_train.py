@@ -18,20 +18,19 @@ class DEEPFAKE_train_Dataset(Dataset):
     """Face Landmarks dataset."""
 
     def __init__(self):
-        dir_1 = "D:/dataset/train/fake"
-        dir_0 = "D:/dataset/train/real"
+<<<<<<< HEAD
+        dir_1 = "D:/data/deeper_forensics/train/fake/"
+        dir_0 = "D:/data/deeper_forensics/train/real/"
+=======
+        #딥페이크 프레임 데이터 로드.
+        dir_1 = "D:/full_data/train/fake/"
+        dir_0 = "D:/full_data/train/real/"
+>>>>>>> 836384cfb2f62c382b9140ec21001d70541ee65e
         file_list_0 = os.listdir(dir_0)
         file_list_1 = os.listdir(dir_1)
         
         self.data_dict = {}
-        '''
-        #real data 
-        for i in range(len(file_list_0)):
-            self.data_dict[i] = (dir_0+file_list_0[i], 0)
-        #real data 뒤에 fake data
-        for i in range(len(file_list_1)):
-            self.data_dict[len(file_list_0)+i] = (dir_1+file_list_1[i], 1)
-        '''
+       
         self.max_len  = max(len(file_list_0), len(file_list_1))
         for i in range(self.max_len*2):
             if(i%2==0): #data_dict 의 짝수번 인덱스는 real data 저장

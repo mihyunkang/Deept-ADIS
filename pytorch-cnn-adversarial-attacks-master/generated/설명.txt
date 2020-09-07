@@ -1,0 +1,5 @@
+original image : deepfake video에서 face cut한 이미지
+targeted_adv_img_from_1_to_0 : fake이미지를 FGSM방식으로 AE 생성한 것
+targeted_adv_noise_from_1_to_0 : AE 노이즈
+targeted_adv_img_from_1_to_0_adjust : AE 노이즈 값 범위가 작아서 잘 보이도록 범위 줄인 것
+cmd : 모델이 77%의 confidence로 AE를 오분류 

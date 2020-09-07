@@ -26,8 +26,9 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.utils.model_zoo as model_zoo
+import torch.utils.model_zoo 
 from torch.nn import init
+from torch.utils.model_zoo import load_url 
 
 __all__ = ['xception']
 
@@ -213,7 +214,7 @@ class Xception(nn.Module):
         return x
 
 
-def xception(num_classes=1000, pretrained='imagenet'):
+def xception(num_classes=1000, pretrained=False):
     model = Xception(num_classes=num_classes)
     if pretrained:
         settings = pretrained_settings['xception'][pretrained]
@@ -221,7 +222,7 @@ def xception(num_classes=1000, pretrained='imagenet'):
             "num_classes should be {}, but is {}".format(settings['num_classes'], num_classes)
 
         model = Xception(num_classes=num_classes)
-        model.load_state_dict(model_zoo.load_url(settings['url']))
+        model.load_url(settings['url'])
 
         model.input_space = settings['input_space']
         model.input_size = settings['input_size']
