@@ -3,4 +3,7 @@
 /face_data
 /face_data_div
 /real_per_15_frame
+/pretrained-models.pytorch-master/checkpoint/xception
+*.mp4
+*.pth
 
