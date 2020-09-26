@@ -38,7 +38,7 @@ def evaluate(testmodel, valid_loader, device):
             x = x.to(device)
             y = y.to(device)
 
-            output = model(x)
+            output = model(x) #모델 출력
             loss = F.cross_entropy(output, y)
 
             valid_loss.update(loss.item(), number=x.size(0))
