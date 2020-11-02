@@ -4,7 +4,7 @@ import cv2
 import face_recognition
 
 # capture frames from a video
-cap = cv2.VideoCapture( r'aladin.mp4',0)
+cap = cv2.VideoCapture( r'딥트_실시간.mp4',0)
 
 # Initialize variables
 face_locations = []
