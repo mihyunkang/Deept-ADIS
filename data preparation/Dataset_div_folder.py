@@ -11,8 +11,10 @@ path_real = "D:/frame_dataset/real/"
 path_fake = "D:/frame_dataset/fake/" #path_fake = "D:/full_data/fake"
 #파일경로로 불러옴
 real_file = os.listdir(path_real)
+#print(real_file[0:10])
 fake_file = os.listdir(path_fake)
 random.shuffle(real_file)
+#print(real_file[0:10])
 random.shuffle(fake_file)
 
 ##### 옮기는 경로~~~
@@ -21,7 +23,7 @@ dest_test = "D:/dataset/test/"
 #train 데이터
 dest_train = "D:/dataset/train/"
 #val 데이터
-dest_val = "D:/dataset/val/"
+#dest_val = "D:/dataset/val/"
 
 #real file - 2:8 분할
 for i in range(len(real_file)):

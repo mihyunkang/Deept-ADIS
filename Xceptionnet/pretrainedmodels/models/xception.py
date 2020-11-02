@@ -26,9 +26,10 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.utils.model_zoo 
 from torch.nn import init
+import torch.utils.model_zoo 
 from torch.utils.model_zoo import load_url 
+
 
 __all__ = ['xception']
 
@@ -113,10 +114,7 @@ class Block(nn.Module):
 
 
 class Xception(nn.Module):
-    """
-    Xception optimized for the ImageNet dataset, as specified in
-    https://arxiv.org/pdf/1610.02357.pdf
-    """
+
     def __init__(self, num_classes=1000):
         """ Constructor
         Args:
@@ -202,9 +200,9 @@ class Xception(nn.Module):
 
     def logits(self, features):
         x = nn.ReLU(inplace=True)(features)
-
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
+        x = self.fc(x) #이게 맞는지 모르겠다~~~^^
         x = self.last_linear(x)
         return x
 
@@ -214,23 +212,24 @@ class Xception(nn.Module):
         return x
 
 
-def xception(num_classes=1000, pretrained=False):
+def xception(num_classes=1000, pretrained='imagenet'):
     model = Xception(num_classes=num_classes)
     if pretrained:
-        settings = pretrained_settings['xception']['imagenet'] #pretrained
+        settings = pretrained_settings['xception'][pretrained] #pretrained
         assert num_classes == settings['num_classes'], \
             "num_classes should be {}, but is {}".format(settings['num_classes'], num_classes)
 
         model = Xception(num_classes=num_classes)
+        #model.load_state_dict(model_zoo.load_url(settings['url']))
         model.load_url(settings['url'])
-
         model.input_space = settings['input_space']
         model.input_size = settings['input_size']
         model.input_range = settings['input_range']
         model.mean = settings['mean']
         model.std = settings['std']
-
+    
     # TODO: ugly
-    model.last_linear = model.fc
-    del model.fc
+    #여기에 무슨 문제가 또...
+    model.last_linear = model.fc #nn.Linear(2048,2)
+    #del model.fc
     return model
