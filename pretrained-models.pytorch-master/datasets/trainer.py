@@ -39,8 +39,12 @@ class Trainer(AbstractTrainer):
         self.optimizer = optimizer
         self.scheduler = scheduler
         #데이터 로드!
-        self.train_loader = DEEPFAKE_train_DataLoader(batch_size=30) 
-        self.valid_loader = DEEPFAKE_val_DataLoader(batch_size=30)
+        self.train_loader_1 = DEEPFAKE_train_DataLoader(0, batch_size=30)
+        self.train_loader_2 = DEEPFAKE_train_DataLoader(1, batch_size=30)
+        self.train_loader_3 = DEEPFAKE_train_DataLoader(2, batch_size=30)
+        self.train_loader_4 = DEEPFAKE_train_DataLoader(3, batch_size=30)
+        self.train_loader_5 = DEEPFAKE_train_DataLoader(4, batch_size=30) 
+        # self.valid_loader = DEEPFAKE_val_DataLoader(batch_size=30)
         self.device = device
         self.num_epochs = num_epochs
         self.output_dir = output_dir
@@ -52,8 +56,15 @@ class Trainer(AbstractTrainer):
         epochs = trange(self.epoch, self.num_epochs + 1, desc='Epoch', ncols=0)
         for self.epoch in epochs:
             self.scheduler.step()
-            train_loss, train_acc = self.train()
-            valid_loss, valid_acc = self.evaluate()
+            train_loss_sum, train_acc_sum = 0.0, 0.0
+            print("{}/5 fold".format((epoch%5)+1))
+            for fold in range(5):
+                if epoch%5 != fold:
+                    train_loss, train_acc = self.train(fold+1)
+                    train_loss_sum += train_loss 
+                    train_acc_sum += train_acc
+                else:
+                    valid_loss, valid_acc = self.evaluate(fold+1)
 
             #트레이닝할때마다 저장하는 체크포인트
             self.save_checkpoint(os.path.join(self.output_dir, 'checkpoint.pth'))
@@ -62,18 +73,27 @@ class Trainer(AbstractTrainer):
                 self.best_acc = valid_acc.value
                 self.save_checkpoint(os.path.join(self.output_dir, 'best.pth'))
 
-            epochs.set_postfix_str(f'train loss: {train_loss}, train acc: {train_acc}, '
+            epochs.set_postfix_str(f'train loss: {train_loss/4}, train acc: {train_acc/4}, '
                                    f'valid loss: {valid_loss}, valid acc: {valid_acc}, '
                                    f'best valid acc: {self.best_acc:.2f}')
 
-    def train(self):
+    def train(self, cross_val_num):
         self.model.train()
         #print(self.model)
         
         train_loss = Average()
         train_acc = Accuracy()
+        if cross_val_num == 1:
+            train_loader = tqdm(self.train_loader_1, ncols=0, desc='Train')
+        elif cross_val_num == 2:
+            train_loader = tqdm(self.train_loader_2, ncols=0, desc='Train')
+        elif cross_val_num == 3:
+            train_loader = tqdm(self.train_loader_3, ncols=0, desc='Train')
+        elif cross_val_num == 4:
+            train_loader = tqdm(self.train_loader_4, ncols=0, desc='Train')
+        elif cross_val_num == 5:
+            train_loader = tqdm(self.train_loader_5, ncols=0, desc='Train')
 
-        train_loader = tqdm(self.train_loader, ncols=0, desc='Train')
         for x, y in train_loader:
             x = x.to(self.device)
             y = y.to(self.device)
@@ -92,14 +112,23 @@ class Trainer(AbstractTrainer):
 
         return train_loss, train_acc
 
-    def evaluate(self):
+    def evaluate(self, cross_val_num):
         self.model.eval()
 
         valid_loss = Average()
         valid_acc = Accuracy()
 
         with torch.no_grad():
-            valid_loader = tqdm(self.valid_loader, desc='Validate', ncols=0)
+            if cross_val_num == 1:
+                valid_loader = tqdm(self.train_loader_1, desc='Validate', ncols=0)
+            elif cross_val_num == 2:
+                valid_loader = tqdm(self.train_loader_2, desc='Validate', ncols=0)
+            elif cross_val_num == 3:
+                valid_loader = tqdm(self.train_loader_3, desc='Validate', ncols=0)
+            elif cross_val_num == 4:
+                valid_loader = tqdm(self.train_loader_4, desc='Validate', ncols=0)
+            elif cross_val_num == 5:
+                valid_loader = tqdm(self.train_loader_5, desc='Validate', ncols=0)
             for x, y in valid_loader:
                 x = x.to(self.device)
                 y = y.to(self.device)
