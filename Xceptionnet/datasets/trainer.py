@@ -14,14 +14,7 @@ from tqdm import tqdm, trange
 from .metrics import Accuracy, Average
 from .deepfake_valid import DEEPFAKE_val_DataLoader
 from .deepfake_train import DEEPFAKE_train_DataLoader
-from pretrainedmodels.models.xception import Xception
-
-#for make train/test set and do cross-validation
-from sklearn.model_selection import train_test_split #randomly split!
-from sklearn import datasets
-
-#for cross validation
-from sklearn.model_selection import KFold, cross_val_score
+#from pretrainedmodels.models.xception import Xception
 
 class AbstractTrainer(metaclass=ABCMeta):
 
@@ -66,14 +59,13 @@ class Trainer(AbstractTrainer):
         for self.epoch in epochs:
             self.scheduler.step()
             train_loss_sum, train_acc_sum = 0.0, 0.0
-            print("{}/5 fold".format((self.epoch%5)+1))
-            #train_loss, train_acc = self.train()
-            #valid_loss, valid_acc = self.evaluate()
+            print("{} fold of 5 folds.".format(self.epoch%5))
+            #epoch 하나당 5개의 폴드로 나눈다는 것...?
             for fold in range(5):
-                if self.epoch%5 != fold:
+                if self.epoch%5 != fold: #각 epoch 마다 1,2,3,4 번째 fold 는 train 용.
                     train_loss, train_acc = self.train(fold+1)
-                    train_loss_sum += train_loss
-                    train_acc_sum += train_acc
+                    train_loss_sum += train_loss.value #여기 달라
+                    train_acc_sum += train_acc.value #여기도! (현정쓰 공부중... 미미 오해 노노)
                 else:
                     valid_loss, valid_acc = self.evaluate(fold+1)
 
@@ -121,7 +113,7 @@ class Trainer(AbstractTrainer):
         for x,y in train_loader:
             x = x.to(self.device)
             y = y.to(self.device)
-            output = self.model(x)
+            output = self.model(x)  #여기서 문제발생.. 대체 뭐누...
             loss = F.cross_entropy(output, y)
 
             self.optimizer.zero_grad()

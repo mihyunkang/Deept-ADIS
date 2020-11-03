@@ -3,8 +3,9 @@ import mlconfig
 import torch
 from torch import nn, optim, distributed
 import pretrainedmodels
-from pretrainedmodels.models.xception import Xception
+from pretrainedmodels.models import *
 from datasets.trainer import Trainer 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     #parser.add_argument('-c', '--config', type=str, default='./configs/train/')
@@ -39,7 +40,7 @@ def main():
     print(torch.cuda.is_available())
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     #print(device)
-    model = Xception()
+    model = xception()
     model.to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.002)

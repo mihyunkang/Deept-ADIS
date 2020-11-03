@@ -8,7 +8,7 @@ import mlconfig
 from torch.utils import data
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, DataLoader
-
+import random
 class Expand(object):
     def __call__(self, t):
         return t.expand(3, t.size(1), t.size(2))
@@ -18,14 +18,16 @@ class DEEPFAKE_train_Dataset(Dataset):
     """Face Landmarks dataset."""
 
     def __init__(self, num):
-        #딥페이크 프레임 데이터 로드.
-        # dir_1 = "C:/mihyun/data/full_data/train/fake/"
-        # dir_0 = "C:/mihyun/data/full_data/train/real/"
-        dir_1 = "../../../data/full_data/train/fake/"
-        dir_0 = "../../../data/full_data/train/real/"
+        #프레임 데이터 로드.
+        dir_1 = "D:/dataset/train/fake/"
+        dir_0 = "D:/dataset/train/real/"
         
         file_list_0 = os.listdir(dir_0)
         file_list_1 = os.listdir(dir_1)
+        #여기... 추가...
+        random.shuffle(file_list_0)
+        random.shuffle(file_list_1)
+
         self.cross_val_num = num # 0~4 5 cross validation
         self.data_dict = {}
         self.max_len  = max(len(file_list_0), len(file_list_1))

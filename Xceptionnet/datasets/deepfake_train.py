@@ -8,7 +8,6 @@ import mlconfig
 from torch.utils import data
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, DataLoader
-from sklearn.model_selection import KFold, train_test_split
 import random
 
 class Expand(object):
@@ -29,8 +28,8 @@ class DEEPFAKE_train_Dataset(Dataset):
 
         file_list_0 = os.listdir(dir_0)
         file_list_1 = os.listdir(dir_1) #무작위로 섞음... 너무 랜덤인가 싶기도...?
-        #random.shuffle(file_list_0)
-        #random.shuffle(file_list_1)
+        random.shuffle(file_list_0)
+        random.shuffle(file_list_1)
         
         self.cross_val_num = num #0~4 -> 5-cross validation
         self.data_dict = {}
@@ -40,14 +39,14 @@ class DEEPFAKE_train_Dataset(Dataset):
                 self.data_dict[i] = (dir_0+file_list_0[(i//2)%len(file_list_0)], 0)
             else: #홀수번 인덱스에는 fake data 저장
                 self.data_dict[i] = (dir_1+file_list_1[(i//2)%len(file_list_1)], 1)
-        #self.data_dict = self.data_dict[((self.max_len*2)//5)*self.cross_val_num:((self.max_len*2)//5)*(self.cross_val_num+1)]
-        self.data_dict = dict(list(self.data_dict.items())[((self.max_len*2)//5)*self.cross_val_num:((self.max_len*2)//5)*(self.cross_val_num+1)])
+        #self.data_dict = dict(list(self.data_dict.items())[((self.max_len*2)//5)*self.cross_val_num:((self.max_len*2)//5)*(self.cross_val_num+1)])
 
 
     def __len__(self):
         return (self.max_len)*2
 
     def __getitem__(self, idx):
+        start = self.cross_val_num*(((self.max_len)//5)*2)
         img_path, label = self.data_dict[idx]
         #image = cv2.imread(img_path, cv2.IMREAD_COLOR)
         image = Image.open(img_path)
