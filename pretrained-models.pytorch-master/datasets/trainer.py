@@ -57,12 +57,12 @@ class Trainer(AbstractTrainer):
         for self.epoch in epochs:
             self.scheduler.step()
             train_loss_sum, train_acc_sum = 0.0, 0.0
-            print("{}/5 fold".format((epoch%5)+1))
+            print("\n**********{}/5 fold**********".format(self.epoch%5))
             for fold in range(5):
-                if epoch%5 != fold:
+                if self.epoch%5 != fold:
                     train_loss, train_acc = self.train(fold+1)
-                    train_loss_sum += train_loss 
-                    train_acc_sum += train_acc
+                    train_loss_sum += train_loss.value
+                    train_acc_sum += train_acc.value
                 else:
                     valid_loss, valid_acc = self.evaluate(fold+1)
 
@@ -73,7 +73,7 @@ class Trainer(AbstractTrainer):
                 self.best_acc = valid_acc.value
                 self.save_checkpoint(os.path.join(self.output_dir, 'best.pth'))
 
-            epochs.set_postfix_str(f'train loss: {train_loss/4}, train acc: {train_acc/4}, '
+            epochs.set_postfix_str(f'train loss: {train_loss_sum/4}, train acc: {train_acc_sum/4}, '
                                    f'valid loss: {valid_loss}, valid acc: {valid_acc}, '
                                    f'best valid acc: {self.best_acc:.2f}')
 
