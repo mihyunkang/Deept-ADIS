@@ -49,10 +49,6 @@ class DEEPFAKE_train_Dataset(Dataset):
         image = Image.open(img_path)
         ## augmentation~~
         transform = transforms.Compose([
-            #transforms.Resize((256,256)),
-            #transforms.RandomVerticalFlip(),
-            #transforms.RandomCrop((20,20)), 
-            #transforms.RandomRotation(90, expand=True),
             transforms.Resize((256,256)),
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)), #mean, std
