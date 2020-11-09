@@ -2,8 +2,6 @@
 
 import numpy as np
 import json
-import cv2
-from torchvision.utils import save_image
 
 import torch
 import torch.nn as nn
@@ -14,8 +12,8 @@ import torchvision.utils
 from torchvision import models
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
+from ..efficientnet.efficientnet.models import efficientnet
 import matplotlib.pyplot as plt
-from models import *
 
 use_cuda = True
 device = torch.device("cuda" if use_cuda else "cpu")
@@ -49,10 +47,8 @@ def image_folder_custom_label(root, transform, custom_label) :
 
 idx2label = ['real', 'fake']
 
-# normal_data = image_folder_custom_label(root ='../../data/deeper_forensics/train/', transform = transform, custom_label = idx2label)
-normal_data = image_folder_custom_label(root ='../../data/full_data/val/', transform = transform, custom_label = idx2label)
-
-normal_loader = Data.DataLoader(normal_data, batch_size=10, shuffle=False)
+normal_data = image_folder_custom_label(root = './Deept-ADIS/CW-pytorch-master/data/deepfake/', transform = transform, custom_label = idx2label)
+normal_loader = Data.DataLoader(normal_data, batch_size=1, shuffle=False)
 
 def imshow(img, title):
     npimg = img.numpy()
@@ -64,12 +60,12 @@ def imshow(img, title):
 normal_iter = iter(normal_loader)
 images, labels = normal_iter.next()
 
-# print("True Image & True Label")
-# imshow(torchvision.utils.make_grid(images, normalize=True), [normal_data.classes[i] for i in labels])
+print("True Image & True Label")
+imshow(torchvision.utils.make_grid(images, normalize=True), [normal_data.classes[i] for i in labels])
 
 # pretrained model
-PATH = "D:/Deept-ADIS/pretrained-models.pytorch-master/checkpoint/xception/best.pth"
-model = xception().to(device)
+PATH = "./Deept-ADIS/efficientnet/checkpoint/best_per100_val_92.pth"
+model = efficientnet.EfficientNet().to(device)
 checkpoint = torch.load(PATH)
 model.load_state_dict(checkpoint['model'])
 print("True Image & Predicted Label")
@@ -91,9 +87,9 @@ for images, labels in normal_loader:
     total += 1
     correct += (pre == labels).sum()
     
-    # imshow(torchvision.utils.make_grid(images.cpu().data, normalize=True), [normal_data.classes[i] for i in pre])
+    imshow(torchvision.utils.make_grid(images.cpu().data, normalize=True), [normal_data.classes[i] for i in pre])
 
-def cw_l2_attack(model, images, labels, targeted=True, c=1e-4, kappa=0, max_iter=100, learning_rate=0.01) :
+def cw_l2_attack(model, images, labels, targeted=False, c=1e-4, kappa=0, max_iter=1000, learning_rate=0.01) :
 
     images = images.to(device)     
     labels = labels.to(device)
@@ -105,7 +101,7 @@ def cw_l2_attack(model, images, labels, targeted=True, c=1e-4, kappa=0, max_iter
         one_hot_labels = torch.eye(len(outputs[0]))[labels].to(device)
 
         i, _ = torch.max((1-one_hot_labels)*outputs, dim=1)
-        j = torch.masked_select(outputs, one_hot_labels.bool())
+        j = torch.masked_select(outputs, one_hot_labels.byte())
         
         # If targeted, optimize for making the other class most likely 
         if targeted :
@@ -148,7 +144,7 @@ def cw_l2_attack(model, images, labels, targeted=True, c=1e-4, kappa=0, max_iter
     return attack_images
 
 
-# print("Attack Image & Predicted Label")
+print("Attack Image & Predicted Label")
 
 model.eval()
 
@@ -163,14 +159,10 @@ for images, labels in normal_loader:
     
     _, pre = torch.max(outputs.data, 1)
 
-    #total += 1
+    total += 1
     correct += (pre == labels).sum()
     
-    for i in range(images.shape[0]):
-        total += 1
-        print(total)
-        save_image(images.cpu().data[i], "./data/cw/"+normal_data.classes[labels.cpu()[i]]+"/"+str(total)+"_"+normal_data.classes[pre[i]]+".jpg")
-    # imshow(torchvision.utils.make_grid(images.cpu().data, normalize=True), [normal_data.classes[i] for i in pre])
+    imshow(torchvision.utils.make_grid(images.cpu().data, normalize=True), [normal_data.classes[i] for i in pre])
     
 print('Accuracy of test text: %f %%' % (100 * float(correct) / total))
 

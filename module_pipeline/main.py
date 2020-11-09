@@ -39,7 +39,7 @@ def extract_frame(video_path):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     PATH = "./checkpoint/xception/best.pth"
     checkpoint = torch.load(PATH)
-    model = xception()
+    model = xception(1000)
     model.load_state_dict(checkpoint['model'])
     model.to(device)
     model.eval()
@@ -92,7 +92,7 @@ def extract_frame(video_path):
                 face_image = trans(face_image_npy)
                 c, h, w = face_image.shape
                 # result = model(transform(trans(face_image.reshape(1, c, h, w))))
-                result = model((transform(face_image_npy), 1))
+                result = model(transform(face_image_npy))
                 count += 1
             else:
                 continue
