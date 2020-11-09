@@ -40,7 +40,7 @@ class DEEPFAKE_val_Dataset(Dataset):
         transform = transforms.Compose([
             transforms.Resize((256,256)),
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,)), #이건 숫자가 왜 이럴까?
+            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)), #mean, std
             Expand(),
         ])
         image = transform(image)
